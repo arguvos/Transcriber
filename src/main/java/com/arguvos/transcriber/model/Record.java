@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 @Data
@@ -19,8 +16,10 @@ public class Record {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    private String originalFileName;
     private String fileName;
-    private Integer fileSize;
+    private Long fileSize;
+    @Lob
     private String data;
     private Status status = Status.PROGRESS;
     private OffsetDateTime createDate = OffsetDateTime.now();
@@ -31,7 +30,8 @@ public class Record {
         FAIL
     }
 
-    public Record(String fileName, Integer fileSize) {
+    public Record(String originalFileName, String fileName, Long fileSize) {
+        this.originalFileName = originalFileName;
         this.fileName = fileName;
         this.fileSize = fileSize;
     }

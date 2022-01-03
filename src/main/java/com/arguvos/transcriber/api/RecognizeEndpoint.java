@@ -1,4 +1,4 @@
-package com.arguvos.transcriber.endpoint;
+package com.arguvos.transcriber.api;
 
 import com.arguvos.transcriber.model.Record;
 import com.arguvos.transcriber.service.RecognizeService;
@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class RecognizeEndpoint {
 
     private final RecognizeService recognizeService;
-
     @Autowired
     public RecognizeEndpoint(RecognizeService recognizeService) {
         this.recognizeService = recognizeService;
@@ -23,8 +22,8 @@ public class RecognizeEndpoint {
 
     @PostMapping
     public Integer recognize(@RequestParam("file") MultipartFile file) {
-        log.info("Create new recognize");
-        Record record = recognizeService.createRecord();
+        log.info("Initialize new recognize");
+        Record record = recognizeService.createRecord(file);
         return record.getId();
     }
 
