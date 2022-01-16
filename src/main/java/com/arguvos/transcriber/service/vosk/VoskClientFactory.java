@@ -10,11 +10,11 @@ import java.nio.file.Paths;
 
 @Component
 public class VoskClientFactory {
+    private final Path rootLocation;
     @Value("${vosk.server.url}")
     private String voskServerUrl;
     @Value("${vosk.server.port}")
-    private String voskServerPort;
-    private final Path rootLocation;
+    private Integer voskServerPort;
 
     @Autowired
     public VoskClientFactory(StorageProperties properties) {

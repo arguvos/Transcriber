@@ -17,11 +17,13 @@ public class Record {
     private Integer id;
 
     private String originalFileName;
-    private String fileName;
+    private String storedFileName;
+    private String convertedFileName;
     private Long fileSize;
     @Lob
     private String data;
     private Status status = Status.PROGRESS;
+    private ProgressStep progressStep = ProgressStep.NONE;
     private OffsetDateTime createDate = OffsetDateTime.now();
 
     public enum Status {
@@ -30,9 +32,21 @@ public class Record {
         FAIL
     }
 
-    public Record(String originalFileName, String fileName, Long fileSize) {
+    public enum ProgressStep {
+        NONE,
+        SAVE,
+        CONVERT,
+        TRANSCRIBE
+    }
+
+    public Record(String originalFileName, Long fileSize) {
         this.originalFileName = originalFileName;
-        this.fileName = fileName;
+        this.fileSize = fileSize;
+    }
+
+    public Record(String originalFileName, String storedFileName, Long fileSize) {
+        this.originalFileName = originalFileName;
+        this.storedFileName = storedFileName;
         this.fileSize = fileSize;
     }
 }

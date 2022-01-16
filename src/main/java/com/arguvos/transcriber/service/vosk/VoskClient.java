@@ -11,13 +11,13 @@ import java.util.concurrent.CountDownLatch;
 
 public class VoskClient {
     private final String voskServerUrl;
-    private final String voskServerPort;
+    private final Integer voskServerPort;
     private final Path rootLocation;
 
     String results = "";
     CountDownLatch recieveLatch;
 
-    public VoskClient(String voskServerUrl, String voskServerPort, Path rootLocation) {
+    public VoskClient(String voskServerUrl, Integer voskServerPort, Path rootLocation) {
         this.voskServerUrl = voskServerUrl;
         this.voskServerPort = voskServerPort;
         this.rootLocation = rootLocation;

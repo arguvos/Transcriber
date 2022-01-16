@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,6 +55,20 @@ public class FileSystemStorageService {
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
             }
+        } catch (IOException e) {
+            throw new StorageException("Failed to store file.", e);
+        }
+    }
+
+    public void storeWithName(InputStream inputStream, String name) {
+        try {
+            BufferedInputStream bis = new BufferedInputStream(inputStream);
+            String filePath = this.rootLocation.resolve(Paths.get(name)).normalize().toAbsolutePath().toString();
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+            int inByte;
+            while((inByte = bis.read()) != -1) bos.write(inByte);
+            bis.close();
+            bos.close();
         } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
