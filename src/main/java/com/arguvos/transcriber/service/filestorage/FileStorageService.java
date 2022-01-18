@@ -15,12 +15,12 @@ import java.util.stream.Stream;
 
 
 @Service
-public class FileSystemStorageService {
+public class FileStorageService {
 
     private final Path rootLocation;
 
     @Autowired
-    public FileSystemStorageService(StorageProperties properties) {
+    public FileStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
 
@@ -64,7 +64,7 @@ public class FileSystemStorageService {
         try {
             BufferedInputStream bis = new BufferedInputStream(inputStream);
             String filePath = this.rootLocation.resolve(Paths.get(name)).normalize().toAbsolutePath().toString();
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
             int inByte;
             while((inByte = bis.read()) != -1) bos.write(inByte);
             bis.close();
@@ -72,6 +72,10 @@ public class FileSystemStorageService {
         } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
+    }
+
+    public File getFile(String filename) {
+        return rootLocation.resolve(filename).toFile();
     }
 
     public Stream<Path> loadAll() {

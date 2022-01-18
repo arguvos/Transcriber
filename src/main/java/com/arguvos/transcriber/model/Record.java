@@ -21,7 +21,7 @@ public class Record {
     private String convertedFileName;
     private Long fileSize;
     @Lob
-    private String data;
+    private String transcript;
     private Status status = Status.PROGRESS;
     private ProgressStep progressStep = ProgressStep.NONE;
     private OffsetDateTime createDate = OffsetDateTime.now();
@@ -41,12 +41,6 @@ public class Record {
 
     public Record(String originalFileName, Long fileSize) {
         this.originalFileName = originalFileName;
-        this.fileSize = fileSize;
-    }
-
-    public Record(String originalFileName, String storedFileName, Long fileSize) {
-        this.originalFileName = originalFileName;
-        this.storedFileName = storedFileName;
         this.fileSize = fileSize;
     }
 }

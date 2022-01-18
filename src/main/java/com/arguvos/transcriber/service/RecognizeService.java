@@ -2,10 +2,12 @@ package com.arguvos.transcriber.service;
 
 import com.arguvos.transcriber.model.Record;
 import com.arguvos.transcriber.repository.RecognizeRepository;
-import com.arguvos.transcriber.service.ffmpeg.FfmpegClient;
-import com.arguvos.transcriber.service.filestorage.FileSystemStorageService;
+import com.arguvos.transcriber.service.ffmpeg.FfmpegException;
+import com.arguvos.transcriber.service.ffmpeg.FfmpegService;
+import com.arguvos.transcriber.service.filestorage.FileStorageService;
 import com.arguvos.transcriber.service.filestorage.StorageException;
-import com.arguvos.transcriber.service.vosk.VoskClientFactory;
+import com.arguvos.transcriber.service.vosk.TranscribeException;
+import com.arguvos.transcriber.service.vosk.TranscribeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,71 +20,79 @@ import java.util.concurrent.Executors;
 @Service
 public class RecognizeService {
     private final RecognizeRepository recognizeRepository;
-    private final FileSystemStorageService storageService;
-    private final VoskClientFactory voskClientFactory;
-    private final FfmpegClient ffmpegClient;
+    private final FileStorageService storageService;
+    private final FfmpegService ffmpegService;
+    private final TranscribeService transcribeService;
 
     @Autowired
     public RecognizeService(RecognizeRepository recognizeRepository,
-                            FileSystemStorageService storageService,
-                            VoskClientFactory voskClientFactory,
-                            FfmpegClient ffmpegClient) {
+                            FileStorageService storageService,
+                            FfmpegService ffmpegService,
+                            TranscribeService transcribeService) {
         this.recognizeRepository = recognizeRepository;
         this.storageService = storageService;
-        this.voskClientFactory = voskClientFactory;
-        this.ffmpegClient = ffmpegClient;
+        this.transcribeService = transcribeService;
+        this.ffmpegService = ffmpegService;
     }
 
-    public Record createRecordNew(MultipartFile file) {
+    public Record createRecord(MultipartFile file) {
         Record record = recognizeRepository.save(new Record(file.getOriginalFilename(), file.getSize()));
+        saveToDisk(file, record);
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                saveToDisk(file, record);
                 convert(record);
                 transcribe(record);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Fail to recognize recordId {} with error: {}", record.getId(), e.getMessage());
             }
         });
         return record;
     }
 
     private void saveToDisk(MultipartFile file, Record record) {
+        log.debug("Save to disk file for recordId {}", record.getId());
         updateProgressStep(record, Record.ProgressStep.SAVE);
         try {
             String fileNameInStorage = storageService.storeWithUniqueName(file);
             record.setStoredFileName(fileNameInStorage);
             recognizeRepository.save(record);
+            log.debug("File for recordId {} saved to disk with name {}", record.getId(), record.getStoredFileName());
         } catch (StorageException storageException) {
+            log.error("Fail to save file for recordId {} with error: {}", record.getId(), storageException.getMessage());
             updateStatus(record, Record.Status.FAIL);
-            throw new RuntimeException();
+            throw storageException;
         }
     }
 
     private void convert(Record record) {
+        log.debug("Convert file for recordId {}", record.getId());
         updateProgressStep(record, Record.ProgressStep.CONVERT);
         try {
-            String convertedFileName = ffmpegClient.convert(record.getStoredFileName());
+            String convertedFileName = ffmpegService.convert(record.getStoredFileName());
             record.setConvertedFileName(convertedFileName);
             recognizeRepository.save(record);
-        } catch (StorageException storageException) {
+            log.debug("File for recordId {} converted and saved with name {}", record.getId(), record.getConvertedFileName());
+        } catch (FfmpegException|StorageException exception) {
+            log.error("Fail to convert file for recordId {}", record.getId());
             updateStatus(record, Record.Status.FAIL);
-            throw new RuntimeException();
+            throw exception;
         }
     }
 
-    private void transcribe(Record record) throws Exception {
+    private void transcribe(Record record) {
+        log.debug("Transcribe for recordId {}", record.getId());
         updateProgressStep(record, Record.ProgressStep.TRANSCRIBE);
         try {
-            String result = voskClientFactory.getClient().transcribe(record.getConvertedFileName());
-            log.info(result);
-            record.setData(result);
+            String result = transcribeService.transcribe(record.getConvertedFileName());
+            record.setTranscript(result);
             record.setStatus(Record.Status.SUCCESS);
             record.setProgressStep(Record.ProgressStep.NONE);
             recognizeRepository.save(record);
-        } catch (StorageException storageException) {
+            log.debug("Transcribe for recordId {} successfully completer", record.getId());
+        } catch (TranscribeException transcribeException) {
+            log.error("Fail to transcribe for recordId {}", record.getId());
             updateStatus(record, Record.Status.FAIL);
-            throw new RuntimeException();
+            throw transcribeException;
         }
     }
 

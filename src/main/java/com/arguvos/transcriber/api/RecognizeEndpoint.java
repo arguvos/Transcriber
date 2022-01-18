@@ -23,7 +23,7 @@ public class RecognizeEndpoint {
     @PostMapping
     public Integer recognize(@RequestParam("file") MultipartFile file) {
         log.info("Initialize new recognize");
-        Record record = recognizeService.createRecordNew(file);
+        Record record = recognizeService.createRecord(file);
         return record.getId();
     }
 

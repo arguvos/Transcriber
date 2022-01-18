@@ -2,57 +2,56 @@ package com.arguvos.transcriber.service.vosk;
 
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+@Slf4j
 public class VoskClient {
     private final String voskServerUrl;
     private final Integer voskServerPort;
-    private final Path rootLocation;
 
     String results = "";
     CountDownLatch recieveLatch;
 
-    public VoskClient(String voskServerUrl, Integer voskServerPort, Path rootLocation) {
+    public VoskClient(String voskServerUrl, Integer voskServerPort) {
         this.voskServerUrl = voskServerUrl;
         this.voskServerPort = voskServerPort;
-        this.rootLocation = rootLocation;
     }
 
+    public synchronized String transcribe(DataInputStream dis) {
+        try {
+            WebSocketFactory factory = new WebSocketFactory();
+            WebSocket ws = factory.createSocket("ws://" + voskServerUrl + ":" + voskServerPort);
+            ws.addListener(new WebSocketAdapter() {
+                @Override
+                public void onTextMessage(WebSocket websocket, String message) {
+                    results = message;
+                    recieveLatch.countDown();
+                }
+            });
+            ws.connect();
 
-    public synchronized String transcribe(String fileName) throws Exception {
-        WebSocketFactory factory = new WebSocketFactory();
-        WebSocket ws = factory.createSocket("ws://" + voskServerUrl + ":" + voskServerPort);
-        ws.addListener(new WebSocketAdapter() {
-            @Override
-            public void onTextMessage(WebSocket websocket, String message) {
-                results = message;
-                recieveLatch.countDown();
+            byte[] buf = new byte[8000];
+            while (true) {
+                int nbytes = dis.read(buf);
+                if (nbytes < 0) break;
+                recieveLatch = new CountDownLatch(1);
+                ws.sendBinary(buf);
+                recieveLatch.await();
             }
-        });
-        ws.connect();
-
-        FileInputStream fis = new FileInputStream(rootLocation.resolve(fileName).toFile());
-        DataInputStream dis = new DataInputStream(fis);
-        byte[] buf = new byte[8000];
-        while (true) {
-            int nbytes = dis.read(buf);
-            if (nbytes < 0) break;
             recieveLatch = new CountDownLatch(1);
-            ws.sendBinary(buf);
+            ws.sendText("{\"eof\" : 1}");
             recieveLatch.await();
+            ws.disconnect();
+            return results;
+        } catch (WebSocketException|IOException|InterruptedException e) {
+            log.error("Fail to transcribe data by vosk with error:", e);
+            throw new TranscribeException("Fail to transcribe data by vosk");
         }
-        recieveLatch = new CountDownLatch(1);
-        ws.sendText("{\"eof\" : 1}");
-        recieveLatch.await();
-        ws.disconnect();
-
-        fis.close();
-        dis.close();
-        return results;
     }
 }
