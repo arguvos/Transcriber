@@ -15,6 +15,7 @@ public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    private Long userId;
 
     private String originalFileName;
     private String storedFileName;

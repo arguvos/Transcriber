@@ -6,18 +6,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.arguvos.transcriber.config.AppConstant.RECOGNIZE_PAGE;
+
 @Slf4j
-@RestController
-@RequestMapping(value = "/recognize")
+@Controller
+@RequestMapping(value = RECOGNIZE_PAGE)
 public class RecognizeEndpoint {
 
     private final RecognizeService recognizeService;
+
     @Autowired
     public RecognizeEndpoint(RecognizeService recognizeService) {
         this.recognizeService = recognizeService;
+    }
+
+    @GetMapping
+    public String recognize() {
+        return RECOGNIZE_PAGE;
     }
 
     @PostMapping
