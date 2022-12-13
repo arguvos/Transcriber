@@ -4,5 +4,9 @@ TODO:
 - ~~Add user support~~
 - Add history recognition page
 - Add user profile page
-- Add admin panel page
 - Add demo page
+- Update template
+- Add tests
+- Add GitHub Actions for compile and test
+- Update readme file, add doc
+- Add admin panel page. Admin can block another users
