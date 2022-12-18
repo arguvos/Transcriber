@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+
 import static com.arguvos.transcriber.config.AppConstant.RECOGNIZE_PAGE;
 
 @Slf4j
@@ -30,9 +32,9 @@ public class RecognizeEndpoint {
     }
 
     @PostMapping
-    public Integer recognize(@RequestParam("file") MultipartFile file) {
+    public Integer recognize(Principal principal, @RequestParam("file") MultipartFile file) {
         log.info("Initialize new recognize");
-        Record record = recognizeService.createRecord(file);
+        Record record = recognizeService.createRecord(principal.getName(), file);
         return record.getId();
     }
 

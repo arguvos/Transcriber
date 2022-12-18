@@ -1,7 +1,9 @@
 package com.arguvos.transcriber.service;
 
 import com.arguvos.transcriber.model.Record;
+import com.arguvos.transcriber.model.UserEntity;
 import com.arguvos.transcriber.repository.RecognizeRepository;
+import com.arguvos.transcriber.repository.UserRepository;
 import com.arguvos.transcriber.service.ffmpeg.FfmpegException;
 import com.arguvos.transcriber.service.ffmpeg.FfmpegService;
 import com.arguvos.transcriber.service.filestorage.FileStorageService;
@@ -19,24 +21,29 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Service
 public class RecognizeService {
+    private final UserRepository userRepository;
     private final RecognizeRepository recognizeRepository;
     private final FileStorageService storageService;
     private final FfmpegService ffmpegService;
     private final TranscribeService transcribeService;
 
     @Autowired
-    public RecognizeService(RecognizeRepository recognizeRepository,
+    public RecognizeService(UserRepository userRepository,
+                            RecognizeRepository recognizeRepository,
                             FileStorageService storageService,
                             FfmpegService ffmpegService,
                             TranscribeService transcribeService) {
+        this.userRepository = userRepository;
         this.recognizeRepository = recognizeRepository;
         this.storageService = storageService;
         this.transcribeService = transcribeService;
         this.ffmpegService = ffmpegService;
     }
 
-    public Record createRecord(MultipartFile file) {
-        Record record = recognizeRepository.save(new Record(file.getOriginalFilename(), file.getSize()));
+    public Record createRecord(String username, MultipartFile file) {
+        UserEntity user = userRepository.findByUsername(username);
+        Long userId = user != null ? user.getId() : null;
+        Record record = recognizeRepository.save(new Record(userId, file.getOriginalFilename(), file.getSize()));
         saveToDisk(file, record);
         Executors.newSingleThreadExecutor().execute(() -> {
             try {

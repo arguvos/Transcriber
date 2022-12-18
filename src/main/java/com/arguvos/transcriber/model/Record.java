@@ -44,4 +44,10 @@ public class Record {
         this.originalFileName = originalFileName;
         this.fileSize = fileSize;
     }
+
+    public Record(Long userId, String originalFileName, Long fileSize) {
+        this.userId = userId;
+        this.originalFileName = originalFileName;
+        this.fileSize = fileSize;
+    }
 }
