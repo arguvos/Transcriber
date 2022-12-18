@@ -23,7 +23,7 @@ public class DefaultUserService {
     PasswordEncoder passwordEncoder;
 
     public void register(UserData user) throws UserAlreadyExistException {
-        if(checkIfUserExist(user.getEmail())){
+        if(checkIfUserExist(user.getEmail(), user.getUsername())){
             throw new UserAlreadyExistException("User already exists for this email");
         }
         UserEntity userEntity = new UserEntity();
@@ -35,8 +35,8 @@ public class DefaultUserService {
     }
 
 
-    public boolean checkIfUserExist(String email) {
-        return userRepository.findByEmail(email) != null;
+    public boolean checkIfUserExist(String email, String username) {
+        return userRepository.findByEmail(email) != null || userRepository.findByUsername(username) != null;
     }
 
     private void encodePassword( UserEntity userEntity, UserData user){
