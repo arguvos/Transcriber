@@ -22,7 +22,7 @@
 <main role="main">
 
     <div class="container">
-        <h2>History</h2>
+        <h2 class="form-signin-heading">Record</h2>
         <table class="table">
             <thead>
             <tr>
@@ -31,25 +31,19 @@
                 <th scope="col">Status</th>
                 <th scope="col">Step</th>
                 <th scope="col">Date</th>
-                <th scope="col">Transcribe</th>
             </tr>
             </thead>
             <tbody class="table-group-divider">
-            <tr th:each="elem: ${history}">
-                <td th:text="${elem.originalFileName}"/>
-                <td th:text="${elem.fileSize}"/>
-                <td th:text="${elem.status}"/>
-                <td th:text="${elem.progressStep}"/>
-                <td th:text="${elem.createDate}"/>
-                <td>
-                    <a th:href="@{/recognize/{id}(id=${elem.id})}">
-                        <button class="btn btn-outline-success my-2 my-sm-0">Get info</button>
-                    </a>
-                </td>
+            <tr>
+                <td th:text="${record.originalFileName}"/>
+                <td th:text="${record.fileSize}"/>
+                <td th:text="${record.status}"/>
+                <td th:text="${record.progressStep}"/>
+                <td th:text="${record.createDate}"/>
             </tr>
             </tbody>
         </table>
-    </div>
+        <p th:text="${record.transcript}"></p>
     </div>
 
 </main>

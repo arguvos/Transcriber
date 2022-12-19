@@ -8,6 +8,7 @@ public class AppConstant {
 
     public static final String RECOGNIZE_PAGE = "/recognize";
     public static final String HISTORY_PAGE = "/history";
+    public static final String RECORD_PAGE = "/record";
     public static final String PROFILE_PAGE = "/profile";
 
     public static final String ADMIN_PAGE = "/admin";

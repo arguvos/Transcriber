@@ -15,4 +15,4 @@ services:
   ffmpeg:
     image: kazhar/ffmpeg-api
     ports:
-      - "3033:3033"
+      - "3000:3000"
