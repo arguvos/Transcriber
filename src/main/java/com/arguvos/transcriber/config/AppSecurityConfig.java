@@ -1,5 +1,6 @@
 package com.arguvos.transcriber.config;
 
+import com.arguvos.transcriber.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +25,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(LOGIN_PAGE, REGISTER_PAGE, DEMO_PAGE, HEALTHCHECK_PAGE).permitAll()
                 .antMatchers(RECOGNIZE_PAGE, HISTORY_PAGE, PROFILE_PAGE).authenticated()
-                .antMatchers(ADMIN_PAGE).hasRole(ADMIN_ROLE)
+                .antMatchers(ADMIN_PAGE).hasRole(Role.ADMIN.toString())
                 .and()
                 .formLogin().defaultSuccessUrl(RECOGNIZE_PAGE)
                 .and()

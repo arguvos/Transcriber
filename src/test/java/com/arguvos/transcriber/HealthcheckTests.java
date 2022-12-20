@@ -23,7 +23,7 @@ public class HealthcheckTests {
     private MockMvc mockMvc;
 
     @Test
-    void tesHealthcheckEndpoint() throws Exception {
+    void testHealthcheckEndpoint() throws Exception {
         List<Status> expected = Arrays.asList(new Status("ffmpeg", false),
                 new Status("transcribe", false));
 

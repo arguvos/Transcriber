@@ -4,8 +4,8 @@ TODO:
 - ~~Add user support~~
 - ~~Add history recognition page~~
 - ~~Add demo page~~
-- Add healthcheck page
-- Add default admin and demo user
+- ~~Add healthcheck page~~
+- ~~Add default admin and demo user~~
 - Add user profile page
 - Update template
 - Add tests
