@@ -54,4 +54,8 @@ public class VoskClient {
             throw new TranscribeException("Fail to transcribe data by vosk");
         }
     }
+
+    public boolean healthcheck() {
+        return false;
+    }
 }

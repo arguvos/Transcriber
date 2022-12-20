@@ -22,7 +22,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(LOGIN_PAGE, REGISTER_PAGE).permitAll()
+                .antMatchers(LOGIN_PAGE, REGISTER_PAGE, DEMO_PAGE, HEALTHCHECK_PAGE).permitAll()
                 .antMatchers(RECOGNIZE_PAGE, HISTORY_PAGE, PROFILE_PAGE).authenticated()
                 .antMatchers(ADMIN_PAGE).hasRole(ADMIN_ROLE)
                 .and()

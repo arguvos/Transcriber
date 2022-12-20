@@ -2,6 +2,7 @@ package com.arguvos.transcriber.service.ffmpeg;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.mime.FileBody;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
@@ -10,6 +11,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -38,6 +40,16 @@ public class FfmpegClient {
         } catch (IOException e) {
             log.error("Fail execute request to ffmpeg with error:", e);
             throw new FfmpegException("Fail execute request to ffmpeg", e);
+        }
+    }
+
+    public boolean healthcheck() {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet get = new HttpGet("http://" + ffmpegServerUrl + ":" + ffmpegServerPort);
+        try (CloseableHttpResponse response = client.execute(get)) {
+            return response.getCode() == 200;
+        } catch (IOException e) {
+            return false;
         }
     }
 }

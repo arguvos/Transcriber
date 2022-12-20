@@ -10,8 +10,13 @@ public class AppConstant {
     public static final String HISTORY_PAGE = "/history";
     public static final String RECORD_PAGE = "/record";
     public static final String PROFILE_PAGE = "/profile";
+    public static final String DEMO_PAGE = "/demo";
+    public static final String HEALTHCHECK_PAGE = "/healthcheck";
 
     public static final String ADMIN_PAGE = "/admin";
+
+    public static final String ADMIN_USER = "admin";
+    public static final String DEMO_USER = "demo";
 
     public static final String ADMIN_ROLE = "ADMIN";
     public static final String USER_ROLE = "USER";

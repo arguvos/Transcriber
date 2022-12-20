@@ -33,4 +33,8 @@ public class TranscribeService {
             throw new TranscribeException("Fail to transcribe data by vosk", e);
         }
     }
+
+    public boolean healthcheck() {
+        return voskClientFactory.getClient().healthcheck();
+    }
 }

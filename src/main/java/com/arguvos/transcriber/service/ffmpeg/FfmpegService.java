@@ -25,4 +25,8 @@ public class FfmpegService {
         fileSystemStorageService.storeWithName(convertedFileInputStream, convertedFileName);
         return convertedFileName;
     }
+
+    public boolean healthcheck() {
+        return ffmpegClient.healthcheck();
+    }
 }
