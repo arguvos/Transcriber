@@ -24,7 +24,7 @@ public class HealthcheckEndpoint {
 
     @GetMapping
     public String healthcheck(Model model) {
-        model.addAttribute("healthcheck", healthcheckService.healthcheck());
+        model.addAttribute(HEALTHCHECK_ATTRIBUTE, healthcheckService.healthcheck());
         return HEALTHCHECK_PAGE;
     }
 }

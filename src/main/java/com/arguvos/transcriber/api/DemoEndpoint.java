@@ -34,7 +34,7 @@ public class DemoEndpoint {
         }
         log.info("Initialize new demo recognize");
         Record record = recognizeService.createRecord(DEMO_USER, file);
-        model.addAttribute("record", recognizeService.getRecord(record.getId()));
+        model.addAttribute(RECORD_ATTRIBUTE, recognizeService.getRecord(record.getId()));
         return RECORD_PAGE;
     }
 

@@ -26,7 +26,7 @@ public class RegistrationEndpoint {
 
     @GetMapping()
     public String register(final Model model) {
-        model.addAttribute("userData", new UserData());
+        model.addAttribute(USER_ATTRIBUTE, new UserData());
         return REGISTER_PAGE;
     }
 
@@ -34,14 +34,14 @@ public class RegistrationEndpoint {
     public String userRegistration(final @Valid UserData userData, final BindingResult bindingResult, final Model model) {
         log.info("Registration new user {}", userData.getEmail());
         if (bindingResult.hasErrors()) {
-            model.addAttribute("registrationForm", userData);
+            model.addAttribute(REGISTRATION_ATTRIBUTE, userData);
             return REGISTER_PAGE;
         }
         try {
             userService.register(userData);
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("email", "userData.email", "An account already exists for this email.");
-            model.addAttribute("registrationForm", userData);
+            model.addAttribute(REGISTRATION_ATTRIBUTE, userData);
             return REGISTER_PAGE;
         }
         return INDEX_PAGE;

@@ -26,7 +26,7 @@ public class HistoryEndpoint {
 
     @GetMapping
     public String history(Principal principal, Model model) {
-        model.addAttribute("history", historyService.getHistoryByUser(principal.getName()));
+        model.addAttribute(HISTORY_ATTRIBUTE, historyService.getHistoryByUser(principal.getName()));
         return HISTORY_PAGE;
     }
 }

@@ -34,13 +34,13 @@ public class RecognizeEndpoint {
     public String recognize(Principal principal, @RequestParam("file") MultipartFile file, Model model) {
         log.info("Initialize new recognize");
         Record record = recognizeService.createRecord(principal.getName(), file);
-        model.addAttribute("record", recognizeService.getRecord(record.getId()));
+        model.addAttribute(RECORD_ATTRIBUTE, recognizeService.getRecord(record.getId()));
         return RECORD_PAGE;
     }
 
     @GetMapping(value = "/{recordId}")
     public String getRecord(@PathVariable Integer recordId, Model model) {
-        model.addAttribute("record", recognizeService.getRecord(recordId));
+        model.addAttribute(RECORD_ATTRIBUTE, recognizeService.getRecord(recordId));
         return RECORD_PAGE;
     }
 }

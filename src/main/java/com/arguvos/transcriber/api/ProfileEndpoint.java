@@ -31,7 +31,7 @@ public class ProfileEndpoint {
 
     @GetMapping()
     public String profile(Principal principal, Model model) {
-        model.addAttribute("userData", userService.findByUsername(principal.getName()));
+        model.addAttribute(USER_ATTRIBUTE, userService.findByUsername(principal.getName()));
         return PROFILE_PAGE;
     }
 
@@ -43,7 +43,7 @@ public class ProfileEndpoint {
         if (userData.getPassword() != null && validator.validate(userData.getPassword()).isEmpty()) {
             userService.updatePassword(principal.getName(), userData.getPassword());
         }
-        model.addAttribute("userData", userService.findByUsername(principal.getName()));
+        model.addAttribute(USER_ATTRIBUTE, userService.findByUsername(principal.getName()));
         return PROFILE_PAGE;
     }
 }

@@ -11,20 +11,23 @@ import java.util.List;
 
 @Service
 public class HealthcheckService {
+    private static final String FFMPEG_SERVICE = "ffmpeg";
+    private static final String TRANSCRIBE_SERVICE = "transcribe";
+
     private final FfmpegService ffmpegService;
     private final TranscribeService transcribeService;
 
     @Autowired
     public HealthcheckService(FfmpegService ffmpegService,
                               TranscribeService transcribeService) {
-        this.transcribeService = transcribeService;
         this.ffmpegService = ffmpegService;
+        this.transcribeService = transcribeService;
     }
 
     public List<Status> healthcheck() {
         List<Status> healthcheck = new ArrayList<>();
-        healthcheck.add(new Status("ffmpeg", ffmpegService.healthcheck()));
-        healthcheck.add(new Status("transcribe", transcribeService.healthcheck()));
+        healthcheck.add(new Status(FFMPEG_SERVICE, ffmpegService.healthcheck()));
+        healthcheck.add(new Status(TRANSCRIBE_SERVICE, transcribeService.healthcheck()));
         return healthcheck;
     }
 }
