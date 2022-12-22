@@ -10,5 +10,6 @@ TODO:
 - Update template
 - Add tests
 - Add GitHub Actions for compile and test
-- Update readme file, add d oc
+- Docker
+- Update readme file, add doc
 - Add admin panel page. Admin can block another users
