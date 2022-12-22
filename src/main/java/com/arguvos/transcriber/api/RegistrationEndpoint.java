@@ -1,7 +1,7 @@
 package com.arguvos.transcriber.api;
 
 import com.arguvos.transcriber.exception.UserAlreadyExistException;
-import com.arguvos.transcriber.service.DefaultUserService;
+import com.arguvos.transcriber.service.UserService;
 import com.arguvos.transcriber.service.model.UserData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static com.arguvos.transcriber.config.AppConstant.*;
 public class RegistrationEndpoint {
 
     @Autowired
-    private DefaultUserService userService;
+    private UserService userService;
 
     @GetMapping()
     public String register(final Model model) {
@@ -42,7 +42,7 @@ public class RegistrationEndpoint {
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("email", "userData.email", "An account already exists for this email.");
             model.addAttribute("registrationForm", userData);
-            return "register";
+            return REGISTER_PAGE;
         }
         return INDEX_PAGE;
     }
