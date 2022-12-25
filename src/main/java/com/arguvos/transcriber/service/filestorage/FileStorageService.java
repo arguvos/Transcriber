@@ -22,6 +22,7 @@ public class FileStorageService {
     @Autowired
     public FileStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
+        init();
     }
 
     public void init() {
