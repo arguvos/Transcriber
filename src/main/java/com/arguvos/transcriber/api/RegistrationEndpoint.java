@@ -25,8 +25,7 @@ public class RegistrationEndpoint {
     private UserService userService;
 
     @GetMapping()
-    public String register(final Model model) {
-        model.addAttribute(USER_ATTRIBUTE, new UserData());
+    public String register() {
         return REGISTER_PAGE;
     }
 

@@ -23,8 +23,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserEntity findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserData findByUsername(String username) {
+        UserEntity user = userRepository.findByUsername(username);
+        return UserData.builder().username(user.getUsername())
+                .email(user.getEmail()).build();
     }
 
     public void register(UserData user) throws UserAlreadyExistException {

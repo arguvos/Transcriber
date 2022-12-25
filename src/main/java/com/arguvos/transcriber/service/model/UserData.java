@@ -1,5 +1,6 @@
 package com.arguvos.transcriber.service.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -7,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Data
+@Builder
 public class UserData implements Serializable {
 
     @NotEmpty(message = "Username can not be empty")

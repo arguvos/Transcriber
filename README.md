@@ -13,3 +13,4 @@ TODO:
 - Docker
 - Update readme file, add doc
 - Add admin panel page. Admin can block another users
+- Add statistic page.
