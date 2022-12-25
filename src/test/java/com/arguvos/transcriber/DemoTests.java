@@ -1,31 +1,25 @@
 package com.arguvos.transcriber;
 
-import com.arguvos.transcriber.model.Record;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Objects;
-
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
-@SpringBootTest
-public class RecognizeTests {
+@SpringBootTest(properties = { "demo.max-file-size=1" })
+public class DemoTests {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser
-    void testRecognizeEndpoint() throws Exception {
+    void testDemoEndpoint() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "hello.txt",
@@ -33,7 +27,7 @@ public class RecognizeTests {
                 "Hello, World!".getBytes()
         );
         this.mockMvc
-                .perform(multipart("/recognize").file(file))
+                .perform(multipart("/demo").file(file))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/record"))
                 .andExpect(model().attribute("record", hasProperty("originalFileName", is(file.getOriginalFilename()))))
@@ -45,28 +39,16 @@ public class RecognizeTests {
     }
 
     @Test
-    @WithMockUser
-    void testGetRecordEndpoint() throws Exception {
+    void testMaxFileSizeAtDemoEndpoint() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "hello.txt",
                 MediaType.TEXT_PLAIN_VALUE,
-                "Hello, World!".getBytes()
+                new byte[2000000] //2Mb
         );
-        Record record = (Record) Objects.requireNonNull(this.mockMvc
-                .perform(multipart("/recognize").file(file))
-                .andExpect(status().isOk())
-                .andReturn().getModelAndView()).getModel().get("record");
         this.mockMvc
-                .perform(get("/recognize/" + record.getId()))
+                .perform(multipart("/demo").file(file))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/record"))
-                .andExpect(model().attribute("record", hasProperty("originalFileName", is(file.getOriginalFilename()))))
-                .andExpect(model().attribute("record", hasProperty("fileSize", is(file.getSize()))))
-                .andExpect(model().attribute("record", hasProperty("storedFileName", notNullValue())))
-                .andExpect(model().attribute("record", hasProperty("status", notNullValue())))
-                .andExpect(model().attribute("record", hasProperty("progressStep", notNullValue())))
-                .andExpect(model().attribute("record", hasProperty("createDate", notNullValue())));
-
+                .andExpect(view().name("/index"));
     }
 }

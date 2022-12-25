@@ -2,7 +2,6 @@ package com.arguvos.transcriber;
 
 import com.arguvos.transcriber.repository.RecognizeRepository;
 import com.arguvos.transcriber.repository.UserRepository;
-import com.arguvos.transcriber.service.HistoryService;
 import com.arguvos.transcriber.utils.Helper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class HistoryTests {
-
-    @Autowired
-    HistoryService historyService;
     @Autowired
     UserRepository userRepository;
     @Autowired
