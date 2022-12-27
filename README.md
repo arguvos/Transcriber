@@ -1,4 +1,4 @@
-# Transcriber
+# Transcriber [![Build](https://github.com/arguvos/Transcriber/actions/workflows/build.yml/badge.svg)](https://github.com/arguvos/Transcriber/actions/workflows/build.yml) [![Test](https://github.com/arguvos/Transcriber/actions/workflows/test.yml/badge.svg)](https://github.com/arguvos/Transcriber/actions/workflows/test.yml)
 Transcriber is a service for extracting text from any audio and video files.
 The service has a web interface based on the thymeleaf template.
 The service supports the registration of new users.
@@ -60,11 +60,3 @@ ffmpeg.server.port=3000     #port for connect to ffmpeg service
 vosk.server.url=127.0.0.1   #url for connect to vosk service
 vosk.server.port=2700       #port for connect to vosk service
 ```
-
-## Roadmap
-- Docker
-- Update readme file, add doc
-- Add admin panel page. Admin can block another users 
-- Add statistic page.
-
-## License
