@@ -5,6 +5,8 @@ The service supports the registration of new users.
 Demo functionality is available for all site visitors with a limit on the size of the uploaded file.
 There are no restrictions for authorized users. Also, for authorized users, the history of the files that they uploaded is available.
 
+![Image](img/mainPage.png?raw=true)
+
 How the service works:
 1. When a file is received, it is saved to disk;
 2. Next, using the ffmpeg service, an audio track is cut from the file, converted to wav format and saved to disk;
